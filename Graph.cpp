@@ -7,6 +7,15 @@ ariel::Graph::Graph()
 
 void ariel::Graph::loadGraph(vector<vector<int>> graph, bool isDirected = false)
 {
+    int numRows = graph.size();
+    for (int i = 0; i < numRows; i++)
+    {
+        if (graph[i].size() != numRows)
+        {
+            cout << "Invalid graph: The graph is not a square matrix." << endl;
+            return;
+        }
+    }
     this->graph = graph;
     this->size = graph.size();
     this->isDirected = isDirected;

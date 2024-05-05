@@ -21,6 +21,9 @@ class Graph{
         int getEdge(int i, int j){
             return graph[i][j];
         }
+        bool getIsDirected(){
+            return isDirected;
+        }
         int getEdges();
     
 };
