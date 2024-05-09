@@ -2,40 +2,47 @@
 #include <queue>
 #include <iostream>
 
-void ariel::Algorithms::shortestPath(Graph graph, int start, int end, int algo)
+void ariel::Algorithms::shortestPath(const Graph &graph, int start, int end, int algo)
 {
     vector<int> parent(graph.getSize());
     vector<int> distance(graph.getSize());
     if(algo == no_weights)
     {
-        bfs(graph, start, parent, distance);
+        bfs(graph, (size_t)start, parent, distance);
     }
     else if(algo == Nonnegative_weights)
     {
-        dijkstra(graph, start, parent, distance);
+        dijkstra(graph, (size_t)start, parent, distance);
     }
     else if(algo == negative_weight)
     {
-        if(bellmanFord(graph, start, parent, distance) == failue)
+        if(bellmanFord(graph, (size_t)start, parent, distance) == failue)
         {
             cout << "Negative cycle detected" << endl;
         }
     }
-    if(distance[end] == INF)
+    if(distance[(size_t)end] == INF)
     {
         cout << "There is no path between " << start << " and " << end << endl;
     }
-    string path = "";
+    vector<int> q;
     int u = end;
     while(u != null)
     {
-        path = to_string(u) + " -> " + path;
-        u = parent[u];
+        q.push_back(u);
+        u = parent[(size_t)u];
     }
-    cout << path << endl;
+    for(size_t i = q.size()-1; i >= 0; i--)
+    {
+        if(i == 0){
+            cout << q[i] << endl;
+            return;
+        }
+        cout << q[i] << "->";
+    }
 }
 
-int ariel::Algorithms::isConnected(Graph graph)
+int ariel::Algorithms::isConnected(const Graph &graph)
 {
     if(graph.getSize() == 0)
     {
@@ -45,10 +52,10 @@ int ariel::Algorithms::isConnected(Graph graph)
     vector<int> distance(graph.getSize());
     if(graph.getIsDirected())
     {
-        for(int i = 0; i < graph.getSize(); i++)
+        for(size_t i = 0; i < graph.getSize(); i++)
         {
             bfs(graph, i, parent, distance);
-            for(int j = 0; j < graph.getSize(); j++)
+            for(size_t j = 0; j < graph.getSize(); j++)
             {
                 if(distance[j] == INF)
                 {
@@ -60,7 +67,7 @@ int ariel::Algorithms::isConnected(Graph graph)
     else // undirected graph
     {
         bfs(graph, 0, parent, distance);
-        for(int i = 0; i < graph.getSize(); i++)
+        for(size_t i = 0; i < graph.getSize(); i++)
         {
             if(distance[i] == INF)
             {
@@ -71,12 +78,12 @@ int ariel::Algorithms::isConnected(Graph graph)
     return 1;
 }
 
-void ariel::Algorithms::negativeCycle(Graph graph)
+void ariel::Algorithms::negativeCycle(const Graph &graph)
 {
     vector<vector<int>> newGraph(graph.getSize()+1, vector<int>(graph.getSize()+1));
-    for(int i = 0; i <= graph.getSize(); i++)
+    for(size_t i = 0; i <= graph.getSize(); i++)
     {
-        for(int j = 0; j <= graph.getSize(); j++)
+        for(size_t j = 0; j <= graph.getSize(); j++)
         {
             if(i == graph.getSize() || j == graph.getSize())
             {
@@ -91,41 +98,41 @@ void ariel::Algorithms::negativeCycle(Graph graph)
 
     ariel::Graph g;
     g.loadGraph(newGraph, graph.getIsDirected());
-    int start = graph.getSize();
+    size_t start = graph.getSize();
     vector<int> parent(g.getSize());
     vector<int> distance(g.getSize());
 
-    for(int i = 0; i < g.getSize(); i++)
+    for(size_t i = 0; i < g.getSize(); i++)
     {
         distance[i] = INF;
         parent[i] = null;
     }
     distance[start] = 0;
-    for(int i = 0; i < g.getSize() - 1; i++)
+    for(size_t i = 0; i < g.getSize() - 1; i++)
     {
-        for(int u = 0; u < g.getSize(); u++)
+        for(size_t u = 0; u < g.getSize(); u++)
         {
-            for(int v = 0; v < g.getSize(); v++)
+            for(size_t v = 0; v < g.getSize(); v++)
             {
                 relax(u, v, g, parent, distance);
             }
         }
     }
     vector<int> cycle;
-    for(int u = 0; u < g.getSize(); u++)
+    for(size_t u = 0; u < g.getSize(); u++)
     {
-        for(int v = 0; v < g.getSize(); v++)
+        for(size_t v = 0; v < g.getSize(); v++)
         {
             if(g.getEdge(u, v) != 0 && distance[v] > distance[u] + g.getEdge(u, v)) //negative cycle
             {
                 cycle.push_back(v);
                 int x = parent[u];
-                while(findX(cycle,x) != 0)
+                while(findNodeInVector(cycle,x) == false)
                 {
                     cycle.push_back(x);
-                    x = parent[x];
+                    x = parent[(size_t)x];
                 }
-                for(int i = 0; i < cycle.size(); i++)
+                for(size_t i = 0; i < cycle.size(); i++)
                 {
                     cout << cycle[i] << " -> ";
                 }
@@ -136,66 +143,59 @@ void ariel::Algorithms::negativeCycle(Graph graph)
     cout << "There is no negative cycle in the graph" << endl;
 }
 
-void ariel::Algorithms::isContainsCycle(Graph graph)
+
+void ariel::Algorithms::isContainsCycle(const Graph &graph)
 {
-    vector<int> parent(graph.getSize());
-    vector<int> distance(graph.getSize());
-    vector<int> color(graph.getSize());
-    for(int i = 0; i < graph.getSize(); i++)
-    {
-        color[i] = WHITE;
-        parent[i] = null;
-    }
-    int time = 0;
+    vector<int> parent(graph.getSize(),null);
+    vector<int> color(graph.getSize(),WHITE);
     int Vertex = -1;
-    for(int i = 0; i < graph.getSize(); i++)
+    for(size_t i = 0; i < graph.getSize(); i++)
     {
         if(color[i] == WHITE)
         {
-            Vertex = DFSVisit(graph, i, parent, color, time);
+            Vertex = DFSVisit(graph, i, parent, color);
             if(Vertex != -1) // there is a cycle
             {
                 vector<int> cycle;
                 cycle.push_back(Vertex);
-                int x = parent[Vertex];
-                while(findX(cycle,x) == 0)
+                int current = parent[(size_t)Vertex];
+                while(findNodeInVector(cycle,current) == false)
                 {
-                    cycle.push_back(x);
-                    x = parent[x];
+                    cycle.push_back(current);    
+                    current = parent[(size_t)current];
                 }
-                for(int i = cycle.size()-1; i > 0; i++)
+                for(size_t i = cycle.size()-1; i > 0; i--)
                 {
                     cout << cycle[i] << "->";
                 }
-                cout << cycle[0] << endl;
+                cout << cycle[0] << "->" << cycle[cycle.size()-1] << endl;
                 return;
-                
             }
         }
     }
     cout << "There is no cycle in the graph" << endl;
 }
 
-void ariel::Algorithms::isBipartite(Graph graph)
+void ariel::Algorithms::isBipartite(const Graph &graph)
 {
-    int start = 0;
+    size_t start = 0;
     vector<int> parent(graph.getSize());
     vector<int> color(graph.getSize());
-    for(int i = 0; i < graph.getSize(); i++)
+    for(size_t i = 0; i < graph.getSize(); i++)
     {
         color[i] = WHITE;
         parent[i] = null;
     }
     color[start] = BLUE;
     parent[start] = null;
-    queue<int> q;
+    queue<size_t> q;
     q.push(start);
     while(!q.empty())
     {
-        int u = q.front();
+        size_t u = q.front();
         q.pop();
         
-        for(int v = 0; v < graph.getSize(); v++)
+        for(size_t v = 0; v < graph.getSize(); v++)
         {
             if(graph.getEdge(u, v) != 0)
             {
@@ -225,7 +225,7 @@ void ariel::Algorithms::isBipartite(Graph graph)
     vector<int> setA;
     vector<int> setB;
     cout << "The graph is bipartite: ";
-    for(int i = 0; i < graph.getSize(); i++)
+    for(size_t i = 0; i < graph.getSize(); i++)
     {
         if(color[i] == BLUE)
         {
@@ -237,7 +237,7 @@ void ariel::Algorithms::isBipartite(Graph graph)
         }
     }
     cout << "A={";
-    for(int i = 0; i < setA.size(); i++)
+    for(size_t i = 0; i < setA.size(); i++)
     {
         if(i == setA.size()-1)
         {
@@ -248,7 +248,7 @@ void ariel::Algorithms::isBipartite(Graph graph)
             cout << setA[i] << ", ";
         }
     }
-    for(int i = 0; i < setB.size(); i++)
+    for(size_t i = 0; i < setB.size(); i++)
     {
         if(i == setB.size()-1)
         {
@@ -261,34 +261,43 @@ void ariel::Algorithms::isBipartite(Graph graph)
     }
 }
 
-int ariel::Algorithms::DFSVisit(Graph &graph, int u, vector<int> &parent, vector<int> &color, int time)
+int ariel::Algorithms::DFSVisit(const Graph &graph, size_t u, vector<int> &parent, vector<int> &color)
 {
     color[u] = GRAY;
-    time++;
-    for(int v = 0; v < graph.getSize(); v++)
+    for(size_t v = 0; v < graph.getSize(); v++)
     {
         if(graph.getEdge(u, v) != 0)
         {
-            if(color[v] == WHITE)
+            
+            if(graph.getIsDirected() == false && parent[u] == v)
             {
-                parent[v] = u;
-                DFSVisit(graph, v, parent, color, time);
+                continue;
             }
-            else if(color[v] == GRAY)
-            {
+            if(color[v] == GRAY)
+            {   
+                parent[v] = u;
                 return v;
             }
+            else if(color[v] == WHITE)
+            {
+                parent[v] = u;
+                int ans = DFSVisit(graph, v, parent, color);
+                if(ans != -1)
+                {
+                    return ans;
+                }
+            }
+             
         }
     }
     color[u] = BLACK;
-    time++;
     return -1;
 }
 
-void ariel::Algorithms::bfs(Graph &graph, int start, vector<int> &parent, vector<int> &distance)
+void ariel::Algorithms::bfs(const Graph &graph, size_t start, vector<int> &parent, vector<int> &distance)
 {
     vector<int> color(graph.getSize(), WHITE);
-    for(int i = 0; i < graph.getSize(); i++)
+    for(size_t i = 0; i < graph.getSize(); i++)
     {
         parent[i] = null;
         distance[i] = INF;
@@ -297,13 +306,13 @@ void ariel::Algorithms::bfs(Graph &graph, int start, vector<int> &parent, vector
     color[start] = GRAY;
     distance[start] = 0;
     parent[start] = null;
-    queue<int> q;
+    queue<size_t> q;
     q.push(start);
     while(!q.empty())
     {
-        int u = q.front();
+        size_t u = q.front();
         q.pop();
-        for(int v = 0; v < graph.getSize(); v++)
+        for(size_t v = 0; v < graph.getSize(); v++)
         {
             if(graph.getEdge(u, v) != 0)
             {
@@ -320,48 +329,48 @@ void ariel::Algorithms::bfs(Graph &graph, int start, vector<int> &parent, vector
     }
 }
 
-void ariel::Algorithms::dijkstra(Graph &graph, int start, vector<int> &parent, vector<int> &distance)
+void ariel::Algorithms::dijkstra(const Graph &graph, size_t start, vector<int> &parent, vector<int> &distance)
 {
     vector<int> color(graph.getSize());
-    for(int i = 0; i < graph.getSize(); i++)
+    for(size_t i = 0; i < graph.getSize(); i++)
     {
         parent[i] = null;
         distance[i] = INF;
         color[i] = WHITE;
     }
     distance[start] = 0;
-    for(int i = 0; i < graph.getSize(); i++)
+    for(size_t i = 0; i < graph.getSize(); i++)
     {
         int u = -1;
         u = extractMin(color, distance, u); // gets the vertex with the minimum distance that still not visited
-        color[u] = BLACK;
-        for(int v = 0; v < graph.getSize(); v++)
+        color[(size_t)u] = BLACK;
+        for(size_t v = 0; v < graph.getSize(); v++)
         {
-            relax(u, v, graph, parent, distance);
+            relax((size_t)u, v, graph, parent, distance);
         }
     }
 }
 
-int ariel::Algorithms::bellmanFord(Graph &graph, int start, vector<int> &parent, vector<int> &distance){
-    for(int i = 0; i < graph.getSize(); i++)
+int ariel::Algorithms::bellmanFord(const Graph &graph, size_t start, vector<int> &parent, vector<int> &distance){
+    for(size_t i = 0; i < graph.getSize(); i++)
     {
         distance[i] = INF;
         parent[i] = null;
     }
     distance[start] = 0;
-    for(int i = 0; i < graph.getSize() - 1; i++)
+    for(size_t i = 0; i < graph.getSize() - 1; i++)
     {
-        for(int u = 0; u < graph.getSize(); u++)
+        for(size_t u = 0; u < graph.getSize(); u++)
         {
-            for(int v = 0; v < graph.getSize(); v++)
+            for(size_t v = 0; v < graph.getSize(); v++)
             {
                 relax(u, v, graph, parent, distance);
             }
         }
     }
-    for(int u = 0; u < graph.getSize(); u++)
+    for(size_t u = 0; u < graph.getSize(); u++)
     {
-        for(int v = 0; v < graph.getSize(); v++)
+        for(size_t v = 0; v < graph.getSize(); v++)
         {
             if(graph.getEdge(u, v) != 0 && distance[v] > distance[u] + graph.getEdge(u, v))
             {
@@ -375,16 +384,17 @@ int ariel::Algorithms::bellmanFord(Graph &graph, int start, vector<int> &parent,
 int ariel::Algorithms::extractMin(vector<int> &color, vector<int> &distance, int u)
 {
     u = -1;
-    for(int i = 0; i < color.size(); i++)
+    for(size_t i = 0; i < color.size(); i++)
     {
-        if(color[i] == WHITE && (u == -1 || distance[i] < distance[u]))
+        if(color[i] == WHITE && (u == -1 || distance[i] < distance[(size_t)u]))
         {
             u = i;
         }
     }
+    return u;
 }
 
-void ariel::Algorithms::relax(int u, int v, Graph &graph, vector<int> &parent, vector<int> &distance)
+void ariel::Algorithms::relax(size_t u, size_t v, const Graph &graph, vector<int> &parent, vector<int> &distance)
 {
     if(graph.getEdge(u, v) != 0 && distance[v] > distance[u] + graph.getEdge(u, v))
     {
@@ -393,14 +403,14 @@ void ariel::Algorithms::relax(int u, int v, Graph &graph, vector<int> &parent, v
     }
 }
 
-int ariel::Algorithms::findX(vector<int> &parent, int x)
+int ariel::Algorithms::findNodeInVector(vector<int> &vec, int x)
 {
-    for(int i = 0; i < parent.size(); i++)
+    for(size_t i = 0; i < vec.size(); i++)
     {
-        if(parent[i] == x)
+        if(vec[i] == x)
         {
-            return 1;
+            return true;
         }
     }
-    return 0;
+    return false;
 }

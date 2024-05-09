@@ -5,15 +5,14 @@ ariel::Graph::Graph()
     this->size = 0;
 }
 
-void ariel::Graph::loadGraph(vector<vector<int>> graph, bool isDirected = false)
+void ariel::Graph::loadGraph(vector<vector<int>> graph, bool isDirected)
 {
     int numRows = graph.size();
-    for (int i = 0; i < numRows; i++)
+    for (size_t i = 0; i < numRows; i++)
     {
         if (graph[i].size() != numRows)
         {
-            cout << "Invalid graph: The graph is not a square matrix." << endl;
-            return;
+            throw invalid_argument("Invalid graph: The graph is not a square matrix.");
         }
     }
     this->graph = graph;
@@ -29,9 +28,9 @@ int ariel::Graph::getEdges()
     }
 
     int edges = 0;
-    for (int i = 0; i < this->size; i++)
+    for (__SIZE_TYPE__ i = 0; i < this->size; i++)
     {
-        for (int j = 0; j < this->size; j++)
+        for (__SIZE_TYPE__ j = 0; j < this->size; j++)
         {
             if (this->graph[i][j] != 0)
             {

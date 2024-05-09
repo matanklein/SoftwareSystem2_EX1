@@ -12,7 +12,7 @@
 
 #define null -1
 
-#define INF 1000000
+#define INF 2147483647
 
 #define failue -1
 #define success 1
@@ -25,19 +25,19 @@ namespace ariel
     {
 
     private:
-        static void bfs(Graph &graph, int start, vector<int> &parent, vector<int> &distance);
-        static int bellmanFord(Graph &graph, int start, vector<int> &parent, vector<int> &distance);
-        static void dijkstra(Graph &graph, int start, vector<int> &parent, vector<int> &distance);
-        static void relax(int u, int v, Graph &graph, vector<int> &parent, vector<int> &distance);
+        static void bfs(const Graph &graph, size_t start, vector<int> &parent, vector<int> &distance);
+        static int bellmanFord(const Graph &graph, size_t start, vector<int> &parent, vector<int> &distance);
+        static void dijkstra(const Graph &graph, size_t start, vector<int> &parent, vector<int> &distance);
+        static void relax(size_t u, size_t v,const Graph &graph, vector<int> &parent, vector<int> &distance);
         static int extractMin(vector<int> &color, vector<int> &distance, int u);
-        static int findX(vector<int> &parent, int x);
-        static int DFSVisit(Graph &graph, int u, vector<int> &parent, vector<int> &color, int time);
+        static int findNodeInVector(vector<int> &parent, int x);
+        static int DFSVisit(const Graph &graph, size_t u, vector<int> &parent, vector<int> &color);
 
     public:
-        static int isConnected(ariel::Graph graph); //Done
-        static void shortestPath(ariel::Graph graph, int start, int end, int algo = negative_weight); //Done
-        static void isContainsCycle(ariel::Graph graph);
-        static void isBipartite(ariel::Graph graph);
-        static void negativeCycle(ariel::Graph graph); //Done
+        static int isConnected(const ariel::Graph &graph);
+        static void shortestPath(const ariel::Graph &graph, int start, int end, int algo = negative_weight);
+        static void isContainsCycle(const ariel::Graph &graph);
+        static void isBipartite(const ariel::Graph &graph);
+        static void negativeCycle(const ariel::Graph &graph);
     };
 }
