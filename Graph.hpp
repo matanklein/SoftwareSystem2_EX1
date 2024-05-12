@@ -1,8 +1,17 @@
+/*
+    ID: 8240
+    Mail: matank214@gmail.com
+*/
+
 #include <vector>
 #include <iostream>
 
 #ifndef GRAPH_H
 #define GRAPH_H
+
+#define no_weights 0
+#define Nonnegative_weights 1
+#define negative_weight 2
 
 using namespace std;
 namespace ariel{
@@ -13,6 +22,7 @@ class Graph{
         vector<vector<int>> graph;
         size_t size;
         bool isDirected;
+        int weihgt;
 
     public:
         Graph();
@@ -29,6 +39,9 @@ class Graph{
             return isDirected;
         }
         int getEdges();
+        int getWeight() const{
+            return weihgt;
+        }
     
 };
 

@@ -1,3 +1,8 @@
+/*
+    ID: 8240
+    Mail: matank214@gmail.com
+*/
+
 #include "Graph.hpp"
 
 #define no_weights 0
@@ -34,10 +39,10 @@ namespace ariel
         static int DFSVisit(const Graph &graph, size_t u, vector<int> &parent, vector<int> &color);
 
     public:
-        static int isConnected(const ariel::Graph &graph);
-        static void shortestPath(const ariel::Graph &graph, int start, int end, int algo = negative_weight);
-        static void isContainsCycle(const ariel::Graph &graph);
-        static void isBipartite(const ariel::Graph &graph);
-        static void negativeCycle(const ariel::Graph &graph);
+        static bool isConnected(const ariel::Graph &graph);
+        static int shortestPath(const ariel::Graph &graph, int start, int end);
+        static bool isContainsCycle(const ariel::Graph &graph);
+        static bool isBipartite(const ariel::Graph &graph);
+        static bool negativeCycle(const ariel::Graph &graph);
     };
 }

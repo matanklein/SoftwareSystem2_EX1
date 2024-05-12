@@ -1,4 +1,8 @@
 /*
+    ID: 8240
+    Mail: matank214@gmail.com
+*/
+/*
  * Demo program for Exercise 2.
  * Author: Benjamin Saldman.
  */
@@ -16,14 +20,6 @@ int main()
 {
     ariel::Graph g;
 
-    vector<vector<int>> graph5 = {
-        {0, 1, 0},
-        {0, 0, 1},
-        {1, 0, 0}};
-    g.loadGraph(graph5);
-    ariel::Algorithms::isContainsCycle(g);    // Should print: "0" (false).
-    //*********************************************
-
     // 3x3 matrix that represents a connected graph.
     vector<vector<int>> graph = {
         {0, 1, 0},
@@ -32,7 +28,7 @@ int main()
     g.loadGraph(graph); // Load the graph to the object.
 
     g.printGraph();                                    // Should print: "Graph with 3 vertices and 4 edges."
-    cout << ariel::Algorithms::isConnected(g) << endl;        // Should print: "1" (true).
+    ariel::Algorithms::isConnected(g);        // Should print: "1" (true).
     ariel::Algorithms::shortestPath(g, 0, 2); // Should print: 0->1->2.
     ariel::Algorithms::isContainsCycle(g);    // Should print: "0" (false).
     ariel::Algorithms::isBipartite(g);        // Should print: "The graph is bipartite: A={0, 2}, B={1}."
@@ -48,7 +44,7 @@ int main()
     g.loadGraph(graph2); // Load the graph to the object.
 
     g.printGraph();                                    // Should print: "Graph with 5 vertices and 8 edges."
-    cout << ariel::Algorithms::isConnected(g) << endl;        // Should print: "0" (false).
+    ariel::Algorithms::isConnected(g);        // Should print: "0" (false).
     ariel::Algorithms::shortestPath(g, 0, 4); // Should print: "-1" (there is no path between 0 and 4).
     ariel::Algorithms::isContainsCycle(g);    // Should print: "The cycle is: 0->1->2->0".
     ariel::Algorithms::isBipartite(g);        // Should print: "0" (false).
@@ -63,7 +59,7 @@ int main()
     g.loadGraph(graph3); // Load the graph to the object.
 
     g.printGraph();                                    // Should print: "Graph with 5 vertices and 8 edges."
-    cout << ariel::Algorithms::isConnected(g) << endl;        // Should print: "1" (true).
+    ariel::Algorithms::isConnected(g);        // Should print: "1" (true).
     ariel::Algorithms::shortestPath(g, 0, 4); // Should print: 0->1->2->3->4.
     ariel::Algorithms::isContainsCycle(g);    // Should print: "0" (false).
     ariel::Algorithms::isBipartite(g);        // Should print: "The graph is bipartite: A={0, 2, 4}, B={1, 3}."
@@ -83,4 +79,6 @@ int main()
     {
         cout << e.what() << endl; // Should print: "Invalid graph: The graph is not a square matrix."
     }
+
+    return 0;   
 }
